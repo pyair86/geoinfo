@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <div class="jumbotron text-center">
+    <h1><b>GEOINFO</b></h1>
+    <p class="lead">Nice map<br></p>
+    {% if session.logged_in == NULL %}
+    <p class="lead"><small>please login to view the map</small></p>
+
+      <a href="/register" class="btn btn-primary btn-lg">Register</a>
+      <a href="/login" class="btn btn-primary btn-lg">Login</a>
+
+    {% else %}
+      <a href="/map/" class="btn btn-primary btn-lg">map</a>
+    {% endif %}
+
+  </div>
+
+{% endblock %}
