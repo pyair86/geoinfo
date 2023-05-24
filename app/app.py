@@ -1,5 +1,7 @@
 from flask import Flask, render_template
 
+#todo add linters
+
 app = Flask(__name__)
 
 
