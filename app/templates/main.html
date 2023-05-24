@@ -12,6 +12,8 @@
 {% endblock %}
 {% block body %}
   <div id="map"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.3/proj4.js"></script>
+    <script src="http://epsg.io/2056.js"></script>
     <script>
       var map = new ol.Map({
         target: 'map',
@@ -21,9 +23,25 @@
           })
         ],
         view: new ol.View({
-          center: ol.proj.fromLonLat([0, 0]), // Set the initial center coordinates
-          zoom: 2 // Set the initial zoom level
+          center: ol.proj.fromLonLat([9.2823054705243, 47.38591365135608]), // Set the initial center coordinates
+          zoom: 8 // Set the initial zoom level
         })
       });
     </script>
+
+      <h2>Add geom</h2>
+      <form id="geomForm">
+
+          <label for="long">long:</label>
+          <input type="text" id="long" name="long" required><br><br>
+
+          <label for="lat">lat:</label>
+          <input type="text" id="lat" name="lat" required><br><br>
+
+          <label for="pointName">point Name:</label>
+          <input type="text" id="pointName" name="pointName" required><br><br>
+
+          <button class="btn btn-primary" type="submit">Add</button>
+    </form>
+
 {% endblock %}
