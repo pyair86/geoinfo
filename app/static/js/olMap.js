@@ -11,6 +11,30 @@
     })
   });
 
+    fetch('/data')
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                // Create an OpenLayers vector layer with the GeoJSON data
+                var vectorSource = new ol.source.Vector({
+                    features: new ol.format.GeoJSON().readFeatures(data)
+                });
+
+                var vectorLayer = new ol.layer.Vector({
+                    source: vectorSource
+                });
+
+                // Add the vector layer to the map
+                map.addLayer(vectorLayer);
+
+                // Fit the map view to the extent of the vector layer
+                map.getView().fit(vectorSource.getExtent(), {
+                    padding: [50, 50, 50, 50],
+                    maxZoom: 15
+                });
+            });
+
   const popup = new ol.Overlay({
     element: document.getElementById('popup'),
     autoPan: true,
