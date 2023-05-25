@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 
 #todo add linters
-
+#todo convert espg of coords
 app = Flask(__name__)
 
 
