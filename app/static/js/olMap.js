@@ -53,15 +53,31 @@
     return false;
   });
 
-  map.on('click', function(evt) {
-    var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature) {
-      return feature;
+  // Handle click event on the map
+map.on('click', function(event) {
+    var feature = map.forEachFeatureAtPixel(event.pixel, function(feature) {
+        return feature;
     });
-
     if (feature) {
-      var coordinate = evt.coordinate;
-      var popupContent = document.getElementById('popup-content');
-      popupContent.innerHTML = '<p>You clicked on the point!</p>';
-      popup.setPosition(coordinate);
+        var geometry = feature.getGeometry();
+        var coordinate = geometry.getCoordinates();
+        var attributes = feature.getProperties();
+
+        // Prepare the popup content
+        var content = '<div style="background-color: #f7f7f7; padding: 10px;">';
+        for (var key in attributes) {
+            if (key !== 'geometry') {
+                content += '<strong>' + key + ':</strong> ' + attributes[key] + '<br>';
+            }
+        }
+        content += '</div>';
+
+        // Update and show the popup
+        document.getElementById('popup-content').innerHTML = content;
+        popup.setPosition(coordinate);
+    } else {
+        // Hide the popup
+        popup.setPosition(undefined);
     }
-  });
+});
+

@@ -15,6 +15,15 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         font-size: 14px;
       }
+
+      .ol-popup {
+        background-color: #fff;
+        border-radius: 4px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        max-width: 250px;
+    }
     </style>
     <script src="https://openlayers.org/en/v6.5.0/build/ol.js"></script>
 {% endblock %}
@@ -22,9 +31,10 @@
   <div id="map"></div>
 
   <div id="popup" class="ol-popup">
-      <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-      <div id="popup-content"></div>
-    </div>
+    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+    <div id="popup-content" style="color: #333;"></div>
+</div>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.3/proj4.js"></script>
         <script src="http://epsg.io/2056.js"></script>

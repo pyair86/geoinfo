@@ -1,6 +1,7 @@
 from flask import Flask, render_template,jsonify
 import db
-#todo add linters
+
+# todo add to improvements linters, spatial constrains
 #todo convert espg of coords
 app = Flask(__name__)
 
