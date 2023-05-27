@@ -5,14 +5,13 @@ from configs.config import postgres
 
 
 def connect():
-
     try:
         conn = psycopg2.connect(
-                host=postgres["host"],
-                database=postgres["database"],
-                user=postgres["user"],
-                password=postgres["password"],
-                port=postgres["port"]
+            host=postgres["host"],
+            database=postgres["database"],
+            user=postgres["user"],
+            password=postgres["password"],
+            port=postgres["port"],
         )
         return conn
 
@@ -21,17 +20,18 @@ def connect():
 
 
 def add_point(resp, sql, conn):
-    name = resp['name']
-    lat = resp['lat']
-    long = resp['long']
+    name = resp["name"]
+    lat = resp["lat"]
+    long = resp["long"]
 
     insert_query = sql.SQL(
-        "INSERT INTO geoinfo.points (geom,name, geom_4326) VALUES (ST_SetSRID(ST_MakePoint({}, {}), 2056), {}, ST_MakePoint({}, {}));").format(
+        "INSERT INTO geoinfo.points (geom_2056,name, geom_4326) VALUES (ST_SetSRID(ST_MakePoint({}, {}), 2056), {}, ST_MakePoint({}, {}));"
+    ).format(
         sql.Literal(long),
         sql.Literal(lat),
         sql.Literal(name),
         sql.Literal(long),
-        sql.Literal(lat)
+        sql.Literal(lat),
     )
 
     with conn.cursor() as cursor:
@@ -50,25 +50,89 @@ def create_geojson(rows):
         feature = {
             "type": "Feature",
             "geometry": geometry,
-            "properties": {"name":name}
+            "properties": {"name": name},
         }
         features.append(feature)
 
-    geojson = {
-        "type": "FeatureCollection",
-        "features": features
-    }
+    geojson = {"type": "FeatureCollection", "features": features}
     return geojson
 
 
 def query(conn):
-    cur = conn.cursor()
-    sql = "SELECT name, ST_AsGeoJSON(geom_4326) FROM geoinfo.points"
-    cur.execute(sql)
-    rows = cur.fetchall()
-    geojson = create_geojson(rows)
-    cur.close()
-    return geojson
+    with conn.cursor() as cur:
+        sql = "SELECT name, ST_AsGeoJSON(geom_4326) FROM geoinfo.points"
+        cur.execute(sql)
+        rows = cur.fetchall()
+        geojson = create_geojson(rows)
+        return geojson
+
+
+def set_postgis(conn):
+    with conn.cursor() as cur:
+        cur.execute("CREATE EXTENSION postgis;")
+        conn.commit()
+
+
+def create_table(conn):
+    with conn.cursor() as cur:
+        sql = """  CREATE TABLE geoinfo.points
+                                (
+                                    id serial PRIMARY KEY,
+                                    name text CONSTRAINT nameCheck CHECK (char_length(name) <= 30) DEFAULT GEOINFO NOT NULL,
+                                    geom_4326 geometry(Point, 4326) NOT NULL,
+                                    geom_2056 geometry(Point, 2056) NOT NULL
+                                );
+                                """
+        cur.execute(sql)
+        conn.commit()
+
+
+def create_index(conn):
+    with conn.cursor() as cur:
+        sql = """
+            CREATE INDEX geoinfo_points_geom_idx
+              ON geoinfo.points
+              USING gist
+              (geom_2056);
+            """
+        cur.execute(sql)
+        conn.commit()
+
+
+def add_constraints(conn):
+    with conn.cursor() as cur:
+        sql = """
+            ALTER TABLE geoinfo.points
+        
+            ADD CONSTRAINT
+                check_dims_geom
+            CHECK (st_ndims(geom) = 0)
+            ;
+        """
+        cur.execute(sql)
+
+
+def add_initial_points(conn):
+    with conn.cursor() as cur:
+        sql = (
+            "INSERT INTO geoinfo.points (geom_2056, name, geom_4326) VALUES"
+            "("
+            "ST_SetSRID(ST_MakePoint(10.4674, 45.653), 2056), "
+            "geoinfo_city,"
+            " ST_MakePoint(10.4674, 45.653)"
+            ");"
+        )
+        cur.execute(sql)
+        sql = (
+            "INSERT INTO geoinfo.points (geom_2056, name, geom_4326) VALUES"
+            "("
+            "ST_SetSRID(ST_MakePoint(10.3574, 45.653), 2056), "
+            "geoinfo_city,"
+            " ST_MakePoint(10.3574, 45.653)"
+            ");"
+        )
+        cur.execute(sql)
+        conn.commit()
 
 
 def disconnect(conn):
