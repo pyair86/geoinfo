@@ -73,6 +73,21 @@ def set_postgis(conn):
         conn.commit()
 
 
+def truncate_table(conn):
+    with conn.cursor() as cur:
+        sql = "TRUNCATE geoinfo.points;"
+        cur.execute(sql)
+        conn.commit()
+
+
+def count_rows(conn):
+    with conn.cursor() as cur:
+        sql = "SELECT COUNT(*) FROM geoinfo.points"
+        cur.execute(sql)
+        count = cur.fetchone()[0]
+        return count
+
+
 def create_table(conn):
     with conn.cursor() as cur:
         sql = """  CREATE TABLE geoinfo.points
@@ -114,23 +129,23 @@ def add_constraints(conn):
 
 def add_initial_points(conn):
     with conn.cursor() as cur:
-        sql = (
-            "INSERT INTO geoinfo.points (geom_2056, name, geom_4326) VALUES"
-            "("
-            "ST_SetSRID(ST_MakePoint(10.4674, 45.653), 2056), "
-            "geoinfo_city,"
-            " ST_MakePoint(10.4674, 45.653)"
-            ");"
-        )
+        sql = """
+            INSERT INTO geoinfo.points (geom_2056, name, geom_4326) VALUES
+            (
+            ST_SetSRID(ST_MakePoint(10.4674, 45.653), 2056), 
+             'geoinfo_city',
+            ST_MakePoint(10.4674, 45.653)
+            );"""
+
         cur.execute(sql)
-        sql = (
-            "INSERT INTO geoinfo.points (geom_2056, name, geom_4326) VALUES"
-            "("
-            "ST_SetSRID(ST_MakePoint(10.3574, 45.653), 2056), "
-            "geoinfo_city,"
-            " ST_MakePoint(10.3574, 45.653)"
-            ");"
-        )
+        sql = """
+            INSERT INTO geoinfo.points (geom_2056, name, geom_4326) VALUES
+            (
+            ST_SetSRID(ST_MakePoint(10.3574, 45.653), 2056), 
+            'geoinfo_city',
+            ST_MakePoint(10.3574, 45.653)
+            );"""
+
         cur.execute(sql)
         conn.commit()
 

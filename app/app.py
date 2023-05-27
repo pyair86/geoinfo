@@ -1,12 +1,12 @@
 from psycopg2 import sql
-
 from flask import Flask, render_template, jsonify, request
+
 import db
 
 # todo add to improvements linters, spatial constrains
-# todo convert espg of coords
 # todo cache
 # todo flash
+# todo clean
 
 app = Flask(__name__)
 
