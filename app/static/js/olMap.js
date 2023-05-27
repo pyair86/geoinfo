@@ -6,12 +6,13 @@
       })
     ],
     view: new ol.View({
-      center: ol.proj.fromLonLat([9.2823054705243, 47.38591365135608]), // Set the initial center coordinates
-      zoom: 8 // Set the initial zoom level
+        projection: 'EPSG:4326',
+      center: [9.2823054705243, 47.38591365135608], // Set the initial center coordinates
+      zoom: 15 // Set the initial zoom level
     })
   });
 
-    fetch('/data')
+    fetch('/points')
             .then(function(response) {
                 return response.json();
             })
@@ -27,12 +28,14 @@
 
                 // Add the vector layer to the map
                 map.addLayer(vectorLayer);
-
                 // Fit the map view to the extent of the vector layer
+                if (isFinite(vectorSource.getExtent()[0])){
                 map.getView().fit(vectorSource.getExtent(), {
                     padding: [50, 50, 50, 50],
                     maxZoom: 15
                 });
+                }
+
             });
 
   const popup = new ol.Overlay({

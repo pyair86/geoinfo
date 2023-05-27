@@ -20,6 +20,26 @@ def connect():
         raise f"Can not connect to DB, {e}"
 
 
+def add_point(resp, sql, conn):
+    name = resp['name']
+    lat = resp['lat']
+    long = resp['long']
+
+    insert_query = sql.SQL(
+        "INSERT INTO geoinfo.points (geom,name, geom_4326) VALUES (ST_SetSRID(ST_MakePoint({}, {}), 2056), {}, ST_MakePoint({}, {}));").format(
+        sql.Literal(long),
+        sql.Literal(lat),
+        sql.Literal(name),
+        sql.Literal(long),
+        sql.Literal(lat)
+    )
+
+    with conn.cursor() as cursor:
+        cursor.execute(insert_query)
+
+    conn.commit()
+
+
 def create_geojson(rows):
     features = []
 
@@ -43,7 +63,7 @@ def create_geojson(rows):
 
 def query(conn):
     cur = conn.cursor()
-    sql = "SELECT name, ST_AsGeoJSON(geom) FROM geoinfo.points"
+    sql = "SELECT name, ST_AsGeoJSON(geom_4326) FROM geoinfo.points"
     cur.execute(sql)
     rows = cur.fetchall()
     geojson = create_geojson(rows)
