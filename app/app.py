@@ -3,9 +3,6 @@ from flask import Flask, render_template, jsonify, request, flash
 
 import db as db
 
-# todo write add to improvements linters, spatial constrains
-# todo write cache
-
 app = Flask(__name__)
 
 app.secret_key = "geoinfo"
