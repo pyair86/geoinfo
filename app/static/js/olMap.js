@@ -66,7 +66,7 @@ map.on('click', function(event) {
         const coordinate = geometry.getCoordinates();
         const attributes = feature.getProperties();
 
-        const content = '<div style="background-color: #f7f7f7; padding: 10px;">';
+        let content = '<div style="background-color: #f7f7f7; padding: 10px;">';
         for (const key in attributes) {
             if (key !== 'geometry') {
                 content += '<strong>' + key + ':</strong> ' + attributes[key] + '<br>';
