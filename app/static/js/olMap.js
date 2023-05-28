@@ -12,6 +12,31 @@ const map = new ol.Map({
     })
 });
 
+
+function addPopup() {
+    const popup = new ol.Overlay({
+        element: document.getElementById('popup'),
+        autoPan: true,
+        autoPanAnimation: {
+            duration: 250
+        }
+    });
+
+    map.addOverlay(popup);
+    return popup;
+}
+
+function setPopupCloser() {
+    const popupCloser = document.getElementById('popup-closer');
+
+    popupCloser.addEventListener('click', function() {
+        popup.setPosition(undefined);
+        popupCloser.blur();
+        return false;
+    });
+}
+
+
 function getPoints() {
     fetch('/points')
         .then(function(response) {
@@ -33,50 +58,38 @@ function getPoints() {
                     maxZoom: 7
                 });
             }
-
         });
 }
 
-getPoints()
+function handlePopup(popup) {
+    map.on('click', function(event) {
+        const feature = map.forEachFeatureAtPixel(event.pixel, function(feature) {
+            return feature;
+        });
+        if (feature) {
+            const geometry = feature.getGeometry();
+            const coordinate = geometry.getCoordinates();
+            const attributes = feature.getProperties();
 
-const popup = new ol.Overlay({
-    element: document.getElementById('popup'),
-    autoPan: true,
-    autoPanAnimation: {
-        duration: 250
-    }
-});
-
-map.addOverlay(popup);
-
-const popupCloser = document.getElementById('popup-closer');
-
-popupCloser.addEventListener('click', function() {
-    popup.setPosition(undefined);
-    popupCloser.blur();
-    return false;
-});
-
-map.on('click', function(event) {
-    const feature = map.forEachFeatureAtPixel(event.pixel, function(feature) {
-        return feature;
-    });
-    if (feature) {
-        const geometry = feature.getGeometry();
-        const coordinate = geometry.getCoordinates();
-        const attributes = feature.getProperties();
-
-        let content = '<div style="background-color: #f7f7f7; padding: 10px;">';
-        for (const key in attributes) {
-            if (key !== 'geometry') {
-                content += '<strong>' + key + ':</strong> ' + attributes[key] + '<br>';
+            let content = '<div style="background-color: #f7f7f7; padding: 10px;">';
+            for (const key in attributes) {
+                if (key !== 'geometry') {
+                    content += '<strong>' + key + ':</strong> ' + attributes[key] + '<br>';
+                }
             }
-        }
-        content += '</div>';
+            content += '</div>';
 
-        document.getElementById('popup-content').innerHTML = content;
-        popup.setPosition(coordinate);
-    } else {
-        popup.setPosition(undefined);
-    }
-});
+            document.getElementById('popup-content').innerHTML = content;
+            popup.setPosition(coordinate);
+        } else {
+            popup.setPosition(undefined);
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    getPoints();
+    popup = addPopup();
+    setPopupCloser();
+    handlePopup(popup);
+}, false);

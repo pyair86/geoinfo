@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.secret_key = "geoinfo"
 
 
-@app.route("/add_point", methods=["GET", "POST"])
+@app.route("/add_point", methods=["POST"])
 def add_point():
     if request.method == "POST":
         try:
