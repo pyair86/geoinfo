@@ -37,9 +37,7 @@ def add_point(resp, sql, conn):
     ).format(
         sql.Literal(long),
         sql.Literal(lat),
-        sql.Literal(name),
-        sql.Literal(long),
-        sql.Literal(lat),
+        sql.Literal(name)
     )
 
     with conn.cursor() as cursor:
