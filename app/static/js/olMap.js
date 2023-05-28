@@ -1,86 +1,82 @@
-  const map = new ol.Map({
+const map = new ol.Map({
     target: 'map',
     layers: [
-      new ol.layer.Tile({
-        source: new ol.source.OSM() // OpenStreetMap as the base layer
-      })
+        new ol.layer.Tile({
+            source: new ol.source.OSM()
+        })
     ],
     view: new ol.View({
         projection: 'EPSG:4326',
-      center: [9.2823054705243, 47.38591365135608], // Set the initial center coordinates
-      zoom: 15 // Set the initial zoom level
+        center: [9.2823054705243, 47.38591365135608],
+        zoom: 7
     })
-  });
+});
 
+function getPoints() {
     fetch('/points')
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(data) {
-                // Create an OpenLayers vector layer with the GeoJSON data
-                var vectorSource = new ol.source.Vector({
-                    features: new ol.format.GeoJSON().readFeatures(data)
-                });
-
-                var vectorLayer = new ol.layer.Vector({
-                    source: vectorSource
-                });
-
-                // Add the vector layer to the map
-                map.addLayer(vectorLayer);
-                // Fit the map view to the extent of the vector layer
-                if (isFinite(vectorSource.getExtent()[0])){
-                map.getView().fit(vectorSource.getExtent(), {
-                    padding: [50, 50, 50, 50],
-                    maxZoom: 15
-                });
-                }
-
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            const vectorSource = new ol.source.Vector({
+                features: new ol.format.GeoJSON().readFeatures(data)
             });
 
-  const popup = new ol.Overlay({
+            const vectorLayer = new ol.layer.Vector({
+                source: vectorSource
+            });
+
+            map.addLayer(vectorLayer);
+            if (isFinite(vectorSource.getExtent()[0])) {
+                map.getView().fit(vectorSource.getExtent(), {
+                    padding: [50, 50, 50, 50],
+                    maxZoom: 7
+                });
+            }
+
+        });
+}
+
+getPoints()
+
+const popup = new ol.Overlay({
     element: document.getElementById('popup'),
     autoPan: true,
     autoPanAnimation: {
-      duration: 250
+        duration: 250
     }
-  });
+});
 
-  map.addOverlay(popup);
+map.addOverlay(popup);
 
-  const popupCloser = document.getElementById('popup-closer');
+const popupCloser = document.getElementById('popup-closer');
 
-  popupCloser.addEventListener('click', function() {
+popupCloser.addEventListener('click', function() {
     popup.setPosition(undefined);
     popupCloser.blur();
     return false;
-  });
+});
 
-  // Handle click event on the map
 map.on('click', function(event) {
-    var feature = map.forEachFeatureAtPixel(event.pixel, function(feature) {
+    const feature = map.forEachFeatureAtPixel(event.pixel, function(feature) {
         return feature;
     });
     if (feature) {
-        var geometry = feature.getGeometry();
-        var coordinate = geometry.getCoordinates();
-        var attributes = feature.getProperties();
+        const geometry = feature.getGeometry();
+        const coordinate = geometry.getCoordinates();
+        const attributes = feature.getProperties();
 
-        // Prepare the popup content
-        var content = '<div style="background-color: #f7f7f7; padding: 10px;">';
-        for (var key in attributes) {
+        const content = '<div style="background-color: #f7f7f7; padding: 10px;">';
+        for (const key in attributes) {
             if (key !== 'geometry') {
                 content += '<strong>' + key + ':</strong> ' + attributes[key] + '<br>';
             }
         }
         content += '</div>';
 
-        // Update and show the popup
         document.getElementById('popup-content').innerHTML = content;
         popup.setPosition(coordinate);
     } else {
-        // Hide the popup
         popup.setPosition(undefined);
     }
 });
-

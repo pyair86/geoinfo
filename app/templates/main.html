@@ -1,60 +1,46 @@
 {% extends "layout.html" %}
 {% block head %}
-    {{ super() }}
-    <link rel="stylesheet" href="https://openlayers.org/en/v6.6.1/css/ol.css" type="text/css" />
-    <style>
-      #map {
-        width: 100%;
-        height: 400px;
-      }
-
-      .popup {
-        background-color: white;
-        padding: 10px;
-        border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        font-size: 14px;
-      }
-
-      .ol-popup {
-        background-color: #fff;
-        border-radius: 4px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        max-width: 250px;
-    }
-    </style>
-    <script  src="https://openlayers.org/en/v6.6.1/build/ol.js"></script>
+{{ super() }}
+<link rel="stylesheet" href="https://openlayers.org/en/v6.6.1/css/ol.css" type="text/css" />
+<style>
+   #map {
+   width: 100%;
+   height: 400px;
+   }
+   .popup {
+   background-color: white;
+   padding: 10px;
+   border-radius: 4px;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+   font-size: 14px;
+   }
+   .ol-popup {
+   background-color: #fff;
+   border-radius: 4px;
+   padding: 10px;
+   border: 1px solid #ccc;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+   max-width: 250px;
+   }
+</style>
+<script  src="https://openlayers.org/en/v6.6.1/build/ol.js"></script>
 {% endblock %}
 {% block body %}
-  <div id="map"></div>
-
-  <div id="popup" class="ol-popup">
-    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-    <div id="popup-content" style="color: #333;"></div>
+<div id="map"></div>
+<div id="popup" class="ol-popup">
+   <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+   <div id="popup-content" style="color: #333;"></div>
 </div>
-
-
-
-    <script src="{{ url_for('static', filename='js/olMap.js') }}"></script>
-
-    <h2>Add geom</h2>
-
-    <form id="geomForm" action="{{ url_for('index') }}" method="post">
-      <label for="long">long:</label>
-      <input type="text" id="long" name="long" maxlength="21" required><br><br>
-
-      <label for="lat">lat:</label>
-      <input type="text" id="lat" name="lat" maxlength="20" required><br><br>
-
-      <label for="pointName">point Name:</label>
-      <input type="text" id="pointName" name="pointName" maxlength="30" required><br><br>
-
-      <button class="btn btn-primary" type="submit">Add</button>
-
-    </form>
-
-    <script src="{{ url_for('static', filename='js/formProcessor.js') }}"></script>
-
+<script src="{{ url_for('static', filename='js/olMap.js') }}"></script>
+<h2>Add geom</h2>
+<form id="geomForm" action="{{ url_for('index') }}" method="post">
+   <label for="long">long:</label>
+   <input type="text" id="long" name="long" maxlength="21" required><br><br>
+   <label for="lat">lat:</label>
+   <input type="text" id="lat" name="lat" maxlength="20" required><br><br>
+   <label for="pointName">point Name:</label>
+   <input type="text" id="pointName" name="pointName" maxlength="30" required><br><br>
+   <button class="btn btn-primary" type="submit">Add</button>
+</form>
+<script src="{{ url_for('static', filename='js/formProcessor.js') }}"></script>
 {% endblock %}
