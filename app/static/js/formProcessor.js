@@ -40,7 +40,7 @@ document.getElementById('geomForm').addEventListener('submit', function(event) {
 
     const long = parseFloat(document.getElementById('long').value.substr(0, 21));
     const lat = parseFloat(document.getElementById('lat').value.substr(0, 20));
-    const name = document.getElementById('pointName').value.substr(0, 30)
+    const name = document.getElementById('pointName').value.substr(0, 30);
 
     isCoordinateValidDataType(long, lat);
 
@@ -58,7 +58,7 @@ document.getElementById('geomForm').addEventListener('submit', function(event) {
     postData('/add_point', data)
         .then(response => {
             console.log(response);
-            getPoints()
+            getPoints();
         })
         .catch(error => {
             console.error(error);
