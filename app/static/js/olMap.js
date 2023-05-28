@@ -1,4 +1,4 @@
-const map = new ol.Map({
+const geoinfoMap = new ol.Map({
     target: 'map',
     layers: [
         new ol.layer.Tile({
@@ -7,13 +7,13 @@ const map = new ol.Map({
     ],
     view: new ol.View({
         projection: 'EPSG:4326',
-        center: [9.2823054705243, 47.38591365135608],
-        zoom: 7
+        zoom: 5
     })
 });
 
 
 function addPopup() {
+
     const popup = new ol.Overlay({
         element: document.getElementById('popup'),
         autoPan: true,
@@ -22,7 +22,7 @@ function addPopup() {
         }
     });
 
-    map.addOverlay(popup);
+    geoinfoMap.addOverlay(popup);
     return popup;
 }
 
@@ -51,19 +51,27 @@ function getPoints() {
                 source: vectorSource
             });
 
-            map.addLayer(vectorLayer);
+            geoinfoMap.addLayer(vectorLayer);
             if (isFinite(vectorSource.getExtent()[0])) {
-                map.getView().fit(vectorSource.getExtent(), {
+                geoinfoMap.getView().fit(vectorSource.getExtent(), {
                     padding: [50, 50, 50, 50],
                     maxZoom: 7
                 });
+            }
+            // if no points in the DB show St. Gallen
+            else {
+                geoinfoMap.setView(new ol.View({
+                    projection: 'EPSG:4326',
+                    center: [9.2823054705243, 47.38591365135608],
+                    zoom: 10
+                }))
             }
         });
 }
 
 function handlePopup(popup) {
-    map.on('click', function(event) {
-        const feature = map.forEachFeatureAtPixel(event.pixel, function(feature) {
+    geoinfoMap.on('click', function(event) {
+        const feature = geoinfoMap.forEachFeatureAtPixel(event.pixel, function(feature) {
             return feature;
         });
         if (feature) {
