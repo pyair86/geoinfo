@@ -13,7 +13,6 @@ const geoinfoMap = new ol.Map({
 
 
 function addPopup() {
-
     const popup = new ol.Overlay({
         element: document.getElementById('popup'),
         autoPan: true,
@@ -69,25 +68,28 @@ function getPoints() {
         });
 }
 
-function handlePopup(popup) {
+function addAttributesToPopup(feature){
+    const attributes = feature.getProperties();
+
+    let content = '<div style="background-color: #f7f7f7; padding: 10px;">';
+    for (const key in attributes) {
+        if (key !== 'geometry') {
+            content += '<strong>' + key + ':</strong> ' + attributes[key] + '<br>';
+        }
+    }
+    content += '</div>';
+    return content;
+}
+
+function renderPopup(popup) {
     geoinfoMap.on('click', function(event) {
         const feature = geoinfoMap.forEachFeatureAtPixel(event.pixel, function(feature) {
             return feature;
         });
         if (feature) {
+            document.getElementById('popup-content').innerHTML = addAttributesToPopup(feature);
             const geometry = feature.getGeometry();
             const coordinate = geometry.getCoordinates();
-            const attributes = feature.getProperties();
-
-            let content = '<div style="background-color: #f7f7f7; padding: 10px;">';
-            for (const key in attributes) {
-                if (key !== 'geometry') {
-                    content += '<strong>' + key + ':</strong> ' + attributes[key] + '<br>';
-                }
-            }
-            content += '</div>';
-
-            document.getElementById('popup-content').innerHTML = content;
             popup.setPosition(coordinate);
         } else {
             popup.setPosition(undefined);

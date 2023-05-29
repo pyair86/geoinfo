@@ -1,4 +1,4 @@
-function isCoordinateOutOfRange(coordinate, degree) {
+function validateCoordinateWithinRange(coordinate, degree) {
     if (coordinate < -degree || coordinate > degree) {
         alert('coordinate is out of range.');
         throw new Error('coordinate is out of range.');
@@ -6,7 +6,7 @@ function isCoordinateOutOfRange(coordinate, degree) {
 }
 
 
-function isCoordinateValidDataType(long, lat) {
+function validateCoordinateValidDataType(long, lat) {
     if (isNaN(long) || isNaN(lat)) {
         alert('Invalid long or lat. Please enter numeric values.');
         throw new Error('Invalid long or lat. Please enter numeric values.');
@@ -42,12 +42,13 @@ document.getElementById('geomForm').addEventListener('submit', function(event) {
     const lat = parseFloat(document.getElementById('lat').value.substr(0, 20));
     const name = document.getElementById('pointName').value.substr(0, 30);
 
-    isCoordinateValidDataType(long, lat);
+    validateCoordinateValidDataType(long, lat);
 
-    const latLimitDegrees = 180;
-    const longLimitDegrees = 90;
-    isCoordinateOutOfRange(lat, latLimitDegrees);
-    isCoordinateOutOfRange(long, longLimitDegrees);
+    const latLimitDegrees = 90;
+    const longLimitDegrees = 180;
+
+    validateCoordinateWithinRange(lat, latLimitDegrees);
+    validateCoordinateWithinRange(long, longLimitDegrees);
 
     const data = {
         lat: lat,

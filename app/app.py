@@ -10,16 +10,15 @@ app.secret_key = "geoinfo"
 
 @app.route("/add_point", methods=["POST"])
 def add_point():
-    if request.method == "POST":
-        try:
-            resp = request.json
-            conn = db.connect()
-            db.add_point(resp, sql, conn)
-            db.disconnect(conn)
-            return jsonify(resp)
-        except:
-            flash("There was a problem while adding the point", "error")
-            return render_template("main.html")
+    try:
+        resp = request.json
+        conn = db.connect()
+        db.add_point(resp, sql, conn)
+        db.disconnect(conn)
+        return jsonify(resp)
+    except:
+        flash("There was a problem while adding the point", "error")
+        return render_template("main.html")
 
 
 @app.route("/")
