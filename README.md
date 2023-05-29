@@ -10,10 +10,10 @@ length of fields in the form, number of dimensions of points in the db.
 
 ## How to run
 
-1. clone https://github.com/pyair86/geoinfo
+1. Clone https://github.com/pyair86/geoinfo
 2. ```docker-compose up -d --build```
 3. Wait shortly till the services are ready and ```docker-compose exec web bash -c "python setup_db.py"```
-4. open http://127.0.0.1:3000/
+4. Open http://127.0.0.1:3000/
 
 For running tests:
 ```docker-compose exec web bash -c "pytest"```
