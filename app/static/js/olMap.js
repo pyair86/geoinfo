@@ -101,5 +101,5 @@ document.addEventListener('DOMContentLoaded', function() {
     getPoints();
     popup = addPopup();
     setPopupCloser();
-    handlePopup(popup);
+    renderPopup(popup);
 }, false);
