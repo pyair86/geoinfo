@@ -16,7 +16,7 @@ length of fields in the form, number of dimensions of points in the db.
 4. open http://127.0.0.1:3000/
 
 For running tests:
-``` docker-compose exec web bash -c "pytest"```
+```docker-compose exec web bash -c "pytest"```
 
 
 ## Improvements
