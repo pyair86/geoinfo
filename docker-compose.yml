@@ -5,8 +5,6 @@ services:
     image: web:latest
     ports:
       - "3000:5000"
-    #volumes:
-      #- ./app:/geoinfo/app
   postgis:
     env_file:
       - database.conf
